@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Prompts Pro | EduConnectRuben</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --navy: #0A192F;
+            --blue: #0284c7;
+            --light-blue: #e0f2fe;
+            --cyan: #0ea5e9;
+            --green: #059669; /* Verde para el botón copiar */
+        }
+        body {
+            background-color: var(--light-blue);
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+        .header-title {
+            font-weight: 800;
+            color: var(--navy);
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+        .card-custom {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 30px;
+            height: 100%;
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+        }
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+        .dashed-box {
+            border: 2px dashed #7dd3fc;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #64748b;
+            background-color: #f0f9ff;
+            font-weight: 600;
+        }
+        .result-textarea {
+            border: 2px solid #bae6fd;
+            border-radius: 12px;
+            background-color: #f8fafc;
+            resize: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.90rem;
+            color: #334155;
+            height: 100%;
+            min-height: 450px;
+        }
+        .result-textarea:focus { border-color: var(--cyan); box-shadow: none; }
+        
+        /* Botones */
+        .btn-generate { background-color: var(--cyan); color: white; font-weight: 600; border: none; padding: 12px; border-radius: 10px; transition: 0.3s; }
+        .btn-generate:hover { background-color: #0284c7; transform: translateY(-2px); color: white;}
+        
+        .btn-pdf { background-color: var(--navy); color: white; font-weight: 600; border: none; padding: 12px; border-radius: 10px; transition: 0.3s; }
+        .btn-pdf:hover { background-color: #112240; transform: translateY(-2px); color: white; }
+
+        .btn-copy-pro { background-color: var(--green); color: white; font-weight: 800; border: none; padding: 12px; border-radius: 10px; transition: 0.3s; }
+        .btn-copy-pro:hover { background-color: #047857; color: white; transform: translateY(-2px); }
+
+        .form-label i { width: 20px; text-align: center; margin-right: 5px; color: var(--blue); }
+
+        /* ESTILOS PDF */
+        #contenedor-pdf-oculto { position: absolute; left: -9999px; top: -9999px; visibility: hidden; }
+        #documento-pdf { background-color: white; padding: 40px; width: 800px; font-family: 'Segoe UI', Arial, sans-serif; color: #333; line-height: 1.6; }
+        #documento-pdf h1 { border-bottom: 4px solid var(--blue); padding-bottom: 10px; text-align: center; font-size: 24pt; color: var(--navy); }
+        #documento-pdf h2 { border-bottom: 2px solid #E0E5EC; margin-top: 30px; padding-bottom: 5px; color: var(--blue); font-size: 16pt; }
+        #documento-pdf h3 { margin-top: 20px; font-size: 14pt; color: var(--navy); }
+        #documento-pdf p, #documento-pdf li { font-size: 11pt; margin-bottom: 8px; }
+        .pdf-page-break { page-break-before: always; }
+        .caja-info { background-color: #f0f9ff; border-left: 4px solid var(--blue); padding: 15px; margin-top: 10px; border-radius: 0 8px 8px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h1 class="header-title display-5 m-0">GENERADOR DE PROMPTS PRO 🚀</h1>
+        <span class="badge bg-info text-dark mt-2 fw-bold px-3 py-2" style="font-size: 0.95rem;">EduConnectRuben | MESCP & BTH</span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card-custom">
+                <div class="section-title">1. Selecciona el Tipo de Prompt</div>
+                
+                <select id="categoriaSelect" class="form-select form-select-lg mb-4 border-info shadow-sm">
+                    <option value="all" selected>-- Elige una categoría educativa --</option>
+                    <optgroup label="Área: Pedagógica (MESCP)">
+                        <option value="tema">🎯 Desarrollo de Tema / Contenido</option>
+                        <option value="pdc">📚 Plan de Clase / PDC</option>
+                        <option value="evaluacion">📝 Generador de Evaluaciones</option>
+                        <option value="rubricas">📊 Rúbricas de Evaluación</option>
+                        <option value="adaptacion">🧩 Adaptación Curricular (Inclusión)</option>
+                    </optgroup>
+                    <optgroup label="Área: Ofimática">
+                        <option value="word">📄 Guía / Documento Word</option>
+                        <option value="excel">📗 Plantilla Automática Excel</option>
+                        <option value="pptx">📊 Estructura Presentación PPTX</option>
+                    </optgroup>
+                    <optgroup label="Área: Sistemas / Programación">
+                        <option value="taller">⚙️ Guía de Laboratorio / Taller</option>
+                        <option value="frontend">🖥️ Código: Desarrollo Frontend (UI)</option>
+                        <option value="backend">🗄️ Código: Backend y Base de Datos</option>
+                    </optgroup>
+                    <optgroup label="Área: Multimedia">
+                        <option value="video">🎬 Guion para Video Educativo</option>
+                        <option value="audio">🎙️ Guion para Podcast / Audio</option>
+                        <option value="imagen">🎨 Generador de Imágenes (Midjourney)</option>
+                    </optgroup>
+                </select>
+
+                <div id="formSection" class="d-none flex-grow-1">
+                    <div class="section-title mt-2">2. Completa los Datos Clave</div>
+                    <div id="dynamicFieldsContainer"></div>
+                </div>
+
+                <div id="placeholderBox" class="dashed-box flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+                    <i class="fa-solid fa-hand-pointer fs-1 mb-3 text-info"></i>
+                    <span>Selecciona una categoría arriba para ver los campos requeridos.</span>
+                </div>
+                
+                <div id="actionButtonsArea" class="mt-4 d-none d-flex flex-column gap-2">
+                    <button id="btnGenerar" class="btn btn-generate w-100 shadow-sm">
+                        <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Generar Prompt Optimizado
+                    </button>
+                    <button id="btnDescargarPDF" class="btn btn-pdf w-100 shadow-sm">
+                        <i class="fa-solid fa-file-pdf me-2"></i> Descargar Guía Técnica de esta Herramienta
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card-custom">
+                <h4 class="mb-3" style="color: var(--navy); font-weight: 800;">
+                    <i class="fa-solid fa-terminal text-info me-2"></i>>_ Tu Prompt Optimizado
+                </h4>
+                <textarea id="promptResult" class="form-control result-textarea flex-grow-1 p-3 shadow-sm" readonly>El prompt estructurado y sin rodeos aparecerá aquí, listo para ser copiado a tu IA favorita...</textarea>
+                <button id="btnCopiar" class="btn btn-copy-pro w-100 mt-3 shadow-sm">
+                    COPIAR AL PORTAPAPELES
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="contenedor-pdf-oculto">
+    <div id="documento-pdf">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1>MANUAL TÉCNICO DE PROMPTS PRO</h1>
+            <h3>Generador Strict-Form | EduConnectRuben</h3>
+            <p><strong>Objetivo:</strong> Eliminar alucinaciones de la IA y obtener salidas directas, formateadas y listas para usar.</p>
+        </div>
+
+        <div id="contenido-manual">
+            <div id="doc-planificacion">
+                <h2>1. ÁREA PEDAGÓGICA (MESCP)</h2>
+                <h3>Desarrollo de Tema / Contenido</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Tema Exacto, Audiencia/Nivel, Formato de Salida (Ensayo, Cuento, Resumen) y Reglas Específicas (ej. "No uses lenguaje complejo").</li>
+                    <li><strong>Salida de la IA:</strong> Un documento formateado en Markdown, directo al punto, sin introducciones conversacionales de la IA.</li>
+                </ul>
+                <h3>Plan de Clase (PDC)</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Contenido Central, Año de Escolaridad y Tiempo/Trimestre.</li>
+                    <li><strong>Salida de la IA:</strong> Tabla estricta con Objetivo Holístico, Práctica, Teoría, Valoración, Producción y Criterios.</li>
+                </ul>
+                <h3>Evaluaciones y Rúbricas</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Tema a Evaluar, Cantidad de Preguntas y Nivel de Dificultad.</li>
+                    <li><strong>Salida de la IA:</strong> Preguntas numeradas (sin relleno) y una clave de respuestas separada. Para rúbricas, una tabla estructurada por Dimensiones.</li>
+                </ul>
+                <h3>Adaptación Curricular</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Tema Central y Diagnóstico del Estudiante (ej. TDAH, Dislexia).</li>
+                    <li><strong>Salida de la IA:</strong> Estrategias puntuales de ajuste metodológico y material de apoyo específico.</li>
+                </ul>
+            </div>
+
+            <div id="doc-ofimatica" class="pdf-page-break">
+                <h2>2. ÁREA DE OFIMÁTICA</h2>
+                <h3>Documentos Word y Estructuras PPTX</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Tema Principal, Audiencia y Extensión/Cantidad de Diapositivas.</li>
+                    <li><strong>Salida de la IA:</strong> Para Word: Títulos (H1, H2) y contenido dividido. Para PPTX: Diapositiva 1 (Título, Viñetas, Imagen sugerida), Diapositiva 2, etc.</li>
+                </ul>
+                <h3>Plantillas Automáticas Excel</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Propósito de la tabla y Funciones/Fórmulas requeridas.</li>
+                    <li><strong>Salida de la IA:</strong> Estructura de cabeceras de columnas y el código exacto de la fórmula matemática (ej. `=BUSCARV(...)`) para copiar y pegar.</li>
+                </ul>
+            </div>
+
+            <div id="doc-codigo" class="pdf-page-break">
+                <h2>3. ÁREA SISTEMAS / PROGRAMACIÓN</h2>
+                <h3>Guías de Laboratorio (Taller BTH)</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Práctica a realizar, Herramientas disponibles y Entregable esperado.</li>
+                    <li><strong>Salida de la IA:</strong> Manual paso a paso con advertencias de seguridad y procedimientos técnicos numerados.</li>
+                </ul>
+                <h3>Desarrollo Frontend / Backend</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Componente o Sistema, Stack Tecnológico (Ej: React, Node.js) y Requisitos Especiales (Seguridad, Responsivo).</li>
+                    <li><strong>Salida de la IA:</strong> Bloques de código limpios, comentados, sin explicaciones redundantes. Separación clara entre la lógica y la base de datos.</li>
+                </ul>
+            </div>
+
+            <div id="doc-multimedia" class="pdf-page-break">
+                <h2>4. ÁREA MULTIMEDIA</h2>
+                <h3>Guiones Audiovisuales (Video / Podcast)</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Tema del contenido, Plataforma (YouTube, TikTok) y Duración exacta.</li>
+                    <li><strong>Salida de la IA:</strong> Tabla de dos columnas (Tiempo/Visual y Locución/Audio). Incluye etiquetas de efectos sonoros (SFX).</li>
+                </ul>
+                <h3>Generador de Imágenes IA</h3>
+                <ul>
+                    <li><strong>Campos requeridos:</strong> Sujeto principal, Entorno y Estilo Artístico/Iluminación.</li>
+                    <li><strong>Salida de la IA:</strong> Un comando en inglés técnico optimizado para Midjourney, DALL-E o Stable Diffusion, utilizando parámetros de renderizado 8K y aspect ratio.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function() {
+        const select = document.getElementById('categoriaSelect');
+        const container = document.getElementById('dynamicFieldsContainer');
+        const formSection = document.getElementById('formSection');
+        const placeholderBox = document.getElementById('placeholderBox');
+        const actionButtonsArea = document.getElementById('actionButtonsArea');
+        const btnGenerar = document.getElementById('btnGenerar');
+        const btnDescargarPDF = document.getElementById('btnDescargarPDF');
+        const resultBox = document.getElementById('promptResult');
+        const btnCopiar = document.getElementById('btnCopiar');
+
+        // 1. DIBUJAR LOS FORMULARIOS ESPECÍFICOS CON ICONOS
+        select.addEventListener('change', function() {
+            const cat = this.value;
+            
+            if (cat === 'all' || cat === '') {
+                formSection.classList.add('d-none');
+                placeholderBox.classList.remove('d-none');
+                actionButtonsArea.classList.add('d-none');
+                resultBox.value = "El prompt estructurado y sin rodeos aparecerá aquí, listo para ser copiado a tu IA favorita...";
+                return;
+            }
+
+            formSection.classList.remove('d-none');
+            placeholderBox.classList.add('d-none');
+            actionButtonsArea.classList.remove('d-none');
+            let html = '';
+
+            // FORMULARIOS PRO (Múltiples inputs, super específicos)
+            switch(cat) {
+                case 'tema':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-book"></i>Tema Exacto</label><input type="text" id="in1" class="form-control" placeholder="Ej: La Revolución Industrial"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-users"></i>Audiencia / Nivel</label><input type="text" id="in2" class="form-control" placeholder="Ej: Estudiantes de 4to de Secundaria"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-file-lines"></i>Formato de Salida</label><input type="text" id="in3" class="form-control" placeholder="Ej: Ensayo corto, Resumen en viñetas, Cuento didáctico"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-circle-exclamation"></i>Regla / Enfoque Especial</label><input type="text" id="in4" class="form-control" placeholder="Ej: No uses palabras técnicas complejas, incluye ejemplos locales"></div>`;
+                    break;
+                case 'pdc':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-bullseye"></i>Contenido Central</label><input type="text" id="in1" class="form-control" placeholder="Ej: Redes Informáticas y Topologías"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-graduation-cap"></i>Año de Escolaridad</label><input type="text" id="in2" class="form-control" placeholder="Ej: 5to de Secundaria Comunitaria Productiva"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-regular fa-calendar"></i>Tiempo / Trimestre</label><input type="text" id="in3" class="form-control" placeholder="Ej: Primer Trimestre / 4 Periodos"></div>`;
+                    break;
+                case 'evaluacion':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-file-signature"></i>Tema a Evaluar</label><input type="text" id="in1" class="form-control" placeholder="Ej: Mantenimiento Preventivo de Hardware"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-list-ol"></i>Cantidad de Preguntas</label><input type="number" id="in2" class="form-control" placeholder="Ej: 10" value="10"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-gauge-high"></i>Dificultad y Tipo</label><input type="text" id="in3" class="form-control" placeholder="Ej: Difícil, 5 de opción múltiple y 5 de análisis"></div>`;
+                    break;
+                case 'rubricas':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-diagram-project"></i>Proyecto a Evaluar</label><input type="text" id="in1" class="form-control" placeholder="Ej: Ensamblaje de una Computadora"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-users"></i>Nivel de los Estudiantes</label><input type="text" id="in2" class="form-control" placeholder="Ej: Bachillerato Técnico Humanístico (BTH)"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-star"></i>Dimensiones MESCP a priorizar</label><input type="text" id="in3" class="form-control" placeholder="Ej: Énfasis en el Hacer (60%) y el Saber (40%)"></div>`;
+                    break;
+                case 'adaptacion':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-book-open"></i>Tema de la Clase</label><input type="text" id="in1" class="form-control" placeholder="Ej: Operaciones con Fracciones"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-notes-medical"></i>Diagnóstico del Estudiante</label><input type="text" id="in2" class="form-control" placeholder="Ej: TDAH severo / Dislexia leve / Problemas de visión"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-arrows-down-to-people"></i>Tipo de Adaptación</label><input type="text" id="in3" class="form-control" placeholder="Ej: Actividades cortas de 10 min, material muy visual"></div>`;
+                    break;
+                case 'word':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-heading"></i>Tema Principal</label><input type="text" id="in1" class="form-control" placeholder="Ej: Historia del Internet"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-ruler"></i>Extensión Aproximada</label><input type="text" id="in2" class="form-control" placeholder="Ej: 2 páginas / 1000 palabras"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-comment-dots"></i>Estilo de Redacción</label><input type="text" id="in3" class="form-control" placeholder="Ej: Formal académico / Didáctico y sencillo"></div>`;
+                    break;
+                case 'excel':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-table"></i>Objetivo de la Plantilla</label><input type="text" id="in1" class="form-control" placeholder="Ej: Registro de notas trimestrales y promedios"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-columns"></i>Columnas / Datos Requeridos</label><input type="text" id="in2" class="form-control" placeholder="Ej: Nombre, Nota 1, Nota 2, Promedio, Estado (Aprobado/Reprobado)"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-calculator"></i>Funciones/Fórmulas requeridas</label><input type="text" id="in3" class="form-control" placeholder="Ej: Función SI, Promedio, Formato Condicional"></div>`;
+                    break;
+                case 'pptx':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-desktop"></i>Tema de Presentación</label><input type="text" id="in1" class="form-control" placeholder="Ej: El Sistema Solar"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-layer-group"></i>Cantidad de Diapositivas</label><input type="number" id="in2" class="form-control" value="8"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-microphone"></i>Guion de Orador</label><input type="text" id="in3" class="form-control" placeholder="Ej: Sí, incluir notas detalladas para el profesor"></div>`;
+                    break;
+                case 'taller':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-screwdriver-wrench"></i>Práctica a Realizar</label><input type="text" id="in1" class="form-control" placeholder="Ej: Ponchado de Cables de Red RJ45"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-toolbox"></i>Herramientas Disponibles</label><input type="text" id="in2" class="form-control" placeholder="Ej: Crimpadora, Cable UTP, Conectores RJ45, Tester"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-clipboard-check"></i>Entregable Esperado</label><input type="text" id="in3" class="form-control" placeholder="Ej: Cable de red cruzado funcional testeado"></div>`;
+                    break;
+                case 'frontend':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-brands fa-html5"></i>Componente o Interfaz</label><input type="text" id="in1" class="form-control" placeholder="Ej: Formulario de inicio de sesión de estudiantes"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-code"></i>Stack Tecnológico</label><input type="text" id="in2" class="form-control" placeholder="Ej: HTML5, CSS3, JavaScript Vanilla"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-wand-magic-sparkles"></i>Diseño / Librería CSS</label><input type="text" id="in3" class="form-control" placeholder="Ej: Tailwind CSS, Diseño Minimalista, Modo Oscuro"></div>`;
+                    break;
+                case 'backend':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-server"></i>Lógica / Funcionalidad</label><input type="text" id="in1" class="form-control" placeholder="Ej: API REST para registrar asistencia de alumnos"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-brands fa-node-js"></i>Lenguaje y Base de Datos</label><input type="text" id="in2" class="form-control" placeholder="Ej: Node.js (Express) y PostgreSQL"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-shield-halved"></i>Requisitos Adicionales</label><input type="text" id="in3" class="form-control" placeholder="Ej: Incluir validación de tokens JWT, control de errores"></div>`;
+                    break;
+                case 'video':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-film"></i>Tema del Video</label><input type="text" id="in1" class="form-control" placeholder="Ej: ¿Qué es la Programación Frontend?"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-mobile-screen"></i>Plataforma / Formato</label><input type="text" id="in2" class="form-control" placeholder="Ej: TikTok (Vertical, rápido) o YouTube (Horizontal, educativo)"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-regular fa-clock"></i>Duración Exacta</label><input type="text" id="in3" class="form-control" placeholder="Ej: 60 segundos"></div>`;
+                    break;
+                case 'audio':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-podcast"></i>Tema del Podcast</label><input type="text" id="in1" class="form-control" placeholder="Ej: La historia de la Inteligencia Artificial"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-microphone-lines"></i>Formato y Tono</label><input type="text" id="in2" class="form-control" placeholder="Ej: Monólogo narrativo, misterioso e intrigante"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-headphones"></i>Duración y SFX</label><input type="text" id="in3" class="form-control" placeholder="Ej: 5 minutos, indicar efectos de sonido sci-fi"></div>`;
+                    break;
+                case 'imagen':
+                    html = `
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-image"></i>Sujeto Principal y Acción</label><input type="text" id="in1" class="form-control" placeholder="Ej: Un maestro enseñando código a un androide"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-mountain-sun"></i>Entorno o Fondo</label><input type="text" id="in2" class="form-control" placeholder="Ej: Un aula futurista y brillante"></div>
+                        <div class="mb-3"><label class="form-label fw-bold text-secondary"><i class="fa-solid fa-palette"></i>Estilo Artístico / Render</label><input type="text" id="in3" class="form-control" placeholder="Ej: Vectorial educativo, flat design, colores pastel, 8k"></div>`;
+                    break;
+            }
+            container.innerHTML = html;
+        });
+
+        // 2. CONSTRUIR EL PROMPT ESTRICTO (NIVEL PRO)
+        btnGenerar.addEventListener('click', function() {
+            const cat = select.value;
+            // Captura segura de datos (fallback si está vacío)
+            const v1 = document.getElementById('in1') ? document.getElementById('in1').value || "[Dato 1]" : "";
+            const v2 = document.getElementById('in2') ? document.getElementById('in2').value || "[Dato 2]" : "";
+            const v3 = document.getElementById('in3') ? document.getElementById('in3').value || "[Dato 3]" : "";
+            const v4 = document.getElementById('in4') ? document.getElementById('in4').value || "[Dato 4]" : "";
+            
+            let p = "";
+            const rule_no_filler = "\n\nREGLA ESTRICTA: Omite presentaciones, saludos o textos conversacionales. Entrega ÚNICAMENTE el contenido solicitado formateado correctamente en Markdown.";
+
+            switch(cat) {
+                case 'tema': 
+                    p = `ACTÚA COMO: Educador Experto y Redactor Técnico.\nTAREA: Desarrolla el contenido sobre "${v1}".\nCONTEXTO/AUDIENCIA: ${v2}.\nFORMATO DE SALIDA: ${v3}.\nRESTRICCIONES Y ENFOQUE: ${v4}.${rule_no_filler}`; 
+                    break;
+                case 'pdc': 
+                    p = `ACTÚA COMO: Pedagogo experto en el MESCP boliviano.\nTAREA: Elabora un Plan de Desarrollo Curricular (PDC).\nTEMA: "${v1}".\nAÑO DE ESCOLARIDAD: ${v2}.\nTIEMPO ESTIMADO: ${v3}.\n\nESTRUCTURA REQUERIDA (Genera en formato de tablas):\n1. Datos referenciales.\n2. Objetivo Holístico (Ser, Saber, Hacer, Decidir).\n3. Momentos Metodológicos (Práctica, Teoría, Valoración, Producción).\n4. Recursos/Materiales.\n5. Criterios de Evaluación.${rule_no_filler}`; 
+                    break;
+                case 'evaluacion': 
+                    p = `ACTÚA COMO: Docente Evaluador Estricto.\nTAREA: Diseña un instrumento de evaluación.\nTEMA: "${v1}".\nCANTIDAD DE PREGUNTAS: ${v2}.\nDIFICULTAD/FORMATO: ${v3}.\n\nINSTRUCCIONES:\n1. Enumera las preguntas claramente.\n2. Al final del documento, bajo un título separado, proporciona la CLAVE DE RESPUESTAS exactas justificadas.${rule_no_filler}`; 
+                    break;
+                case 'rubricas': 
+                    p = `ACTÚA COMO: Evaluador Académico.\nTAREA: Diseña una rúbrica de evaluación tabular.\nPROYECTO: "${v1}".\nNIVEL: ${v2}.\nDIMENSIONES: ${v3}.\n\nESTRUCTURA: Usa una tabla Markdown. Las filas deben ser los Criterios/Dimensiones. Las columnas deben ser los Niveles de Desempeño (Ej: Excelente, Bueno, Regular, Deficiente) con la descripción exacta de qué debe hacer el alumno para obtener esa nota.${rule_no_filler}`; 
+                    break;
+                case 'adaptacion': 
+                    p = `ACTÚA COMO: Psicopedagogo especialista en Inclusión.\nTAREA: Adapta el plan de la clase.\nTEMA ORIGINAL: "${v1}".\nDIAGNÓSTICO DEL ALUMNO: ${v2}.\nTIPO DE ADAPTACIÓN: ${v3}.\n\nENTREGABLE:\n1. Ajuste Metodológico (Cómo enseñar el tema).\n2. Ajuste de Materiales (Qué recursos visuales/físicos usar).\n3. Ajuste de Evaluación (Cómo calificarlo justamente).${rule_no_filler}`; 
+                    break;
+                case 'excel': 
+                    p = `ACTÚA COMO: Analista de Datos y Experto en Microsoft Excel.\nTAREA: Diseñar estructura y lógica para una plantilla.\nOBJETIVO: "${v1}".\nCOLUMNAS: ${v2}.\nFUNCIONES: ${v3}.\n\nENTREGABLE:\n1. Estructura recomendada de encabezados.\n2. CÓDIGO EXACTO DE LAS FÓRMULAS a utilizar (formato de bloque de código), explicando en qué celda pegarlas.\n3. Reglas sugeridas de Formato Condicional.${rule_no_filler}`; 
+                    break;
+                case 'word': 
+                    p = `ACTÚA COMO: Redactor de Documentos Técnicos/Educativos.\nTAREA: Redacta un documento completo.\nTEMA: "${v1}".\nEXTENSIÓN: ${v2}.\nESTILO: ${v3}.\n\nENTREGABLE: Documento estructurado con Título (H1), Subtítulos (H2), uso de negritas para palabras clave y listas de viñetas para facilitar la lectura.${rule_no_filler}`; 
+                    break;
+                case 'pptx': 
+                    p = `ACTÚA COMO: Diseñador Instruccional de Presentaciones.\nTAREA: Crea la estructura visual y de texto para diapositivas.\nTEMA: "${v1}".\nCANTIDAD DE DIAPOSITIVAS: ${v2}.\nGUION DE ORADOR: ${v3}.\n\nESTRUCTURA POR DIAPOSITIVA:\n- Título de Diapositiva.\n- Texto en Pantalla (Máx 4 viñetas cortas, muy resumidas).\n- Elemento Visual (Qué imagen, gráfico o icono buscar).\n- Notas del Orador (El texto exacto que debe leer el profesor).${rule_no_filler}`; 
+                    break;
+                case 'taller': 
+                    p = `ACTÚA COMO: Instructor Técnico de Laboratorio BTH.\nTAREA: Redacta una Guía de Práctica de Taller.\nPRÁCTICA: "${v1}".\nHERRAMIENTAS: ${v2}.\nENTREGABLE DEL ESTUDIANTE: ${v3}.\n\nESTRUCTURA:\n1. Objetivo.\n2. Normas de Seguridad Previas.\n3. Procedimiento (Paso a paso numerado e imperativo).\n4. Rúbrica o lista de cotejo de validación final.${rule_no_filler}`; 
+                    break;
+                case 'frontend': 
+                    p = `ACTÚA COMO: Desarrollador Frontend Senior (UI/UX).\nTAREA: Genera código limpio y responsivo para una interfaz.\nCOMPONENTE: "${v1}".\nSTACK: ${v2}.\nDISEÑO/LIBRERÍA: ${v3}.\n\nENTREGABLE:\nSolo proporciona los bloques de código necesarios (HTML, CSS, JS). Aplica mejores prácticas semánticas y diseño moderno responsivo. NO incluyas explicaciones de instalación de librerías, solo el código del componente.${rule_no_filler}`; 
+                    break;
+                case 'backend': 
+                    p = `ACTÚA COMO: Arquitecto Backend Senior.\nTAREA: Genera la lógica de servidor y base de datos.\nFUNCIONALIDAD: "${v1}".\nSTACK Y BD: ${v2}.\nREQUISITOS: ${v3}.\n\nENTREGABLE:\n1. Estructura de la Tabla/Modelo de Base de Datos.\n2. Bloque de código del Endpoint/Ruta principal.\nUsa buenas prácticas de seguridad, comentarios limpios en español y manejo de errores (Try/Catch).${rule_no_filler}`; 
+                    break;
+                case 'video': 
+                    p = `ACTÚA COMO: Guionista Audiovisual y Productor Ejecutivo.\nTAREA: Escribe un guion técnico para video.\nTEMA: "${v1}".\nPLATAFORMA/FORMATO: ${v2}.\nDURACIÓN: ${v3}.\n\nESTRUCTURA: Usa una tabla de dos columnas. Columna 1: [VISUAL/TIEMPO] (Describe qué se ve en cámara, texto en pantalla o B-Roll). Columna 2: [AUDIO/LOCUCIÓN] (Lo que lee el narrador o SFX). Incluye un gancho (hook) poderoso en los primeros 3 segundos.${rule_no_filler}`; 
+                    break;
+                case 'audio': 
+                    p = `ACTÚA COMO: Productor Creativo de Podcasts.\nTAREA: Escribe el guion para un track de audio/podcast.\nTEMA: "${v1}".\nFORMATO/TONO: ${v2}.\nDURACIÓN/SFX: ${v3}.\n\nINSTRUCCIONES: Escribe el guion separando claramente los bloques de locución de las instrucciones del editor. Usa corchetes para música y efectos (Ej: [MÚSICA: Sube volumen, ritmo de suspenso]).${rule_no_filler}`; 
+                    break;
+                case 'imagen': 
+                    p = `ACTÚA COMO: Ingeniero de Prompts Visuales (Midjourney V6 / DALL-E 3 Master).\nTAREA: Crea un prompt maestro en INGLÉS (para mejor procesamiento de la IA gráfica).\nSUJETO: "${v1}".\nENTORNO: ${v2}.\nESTILO/RENDER: ${v3}.\n\nENTREGABLE: Un único bloque de texto en inglés con la estructura: [Sujeto hiper detallado], [Acción/Pose], [Entorno detallado], [Estilo artístico], [Iluminación, cámara, renderizado 8k, masterpiece].${rule_no_filler}`; 
+                    break;
+            }
+
+            // Animación
+            resultBox.style.opacity = '0';
+            setTimeout(() => {
+                resultBox.value = p;
+                resultBox.style.opacity = '1';
+                resultBox.style.transition = 'opacity 0.3s ease';
+            }, 100);
+        });
+
+        // 3. BOTÓN DE COPIAR
+        btnCopiar.addEventListener('click', function() {
+            resultBox.select();
+            document.execCommand('copy');
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fa-solid fa-check me-2"></i>¡PROMPT COPIADO!';
+            setTimeout(() => { this.innerHTML = originalText; }, 2000);
+        });
+
+        // 4. BOTÓN DE PDF (Misma lógica sin romperla)
+        btnDescargarPDF.addEventListener('click', function() {
+            const selector = select.value;
+            const elementoOrigen = document.getElementById('documento-pdf');
+            const elementoClonado = elementoOrigen.cloneNode(true);
+            
+            const mapaCategorias = {
+                'tema': 'doc-planificacion', 'pdc': 'doc-planificacion', 'evaluacion': 'doc-planificacion', 'rubricas': 'doc-planificacion', 'adaptacion': 'doc-planificacion',
+                'word': 'doc-ofimatica', 'excel': 'doc-ofimatica', 'pptx': 'doc-ofimatica',
+                'taller': 'doc-codigo', 'frontend': 'doc-codigo', 'backend': 'doc-codigo',
+                'video': 'doc-multimedia', 'audio': 'doc-multimedia', 'imagen': 'doc-multimedia'
+            };
+
+            let nombreArchivo = 'Guia_Prompts_EduConnect.pdf';
+
+            if (selector !== 'all' && mapaCategorias[selector]) {
+                const bloqueActivo = mapaCategorias[selector];
+                const textOption = select.options[select.selectedIndex].text;
+                nombreArchivo = `Manual_${textOption.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
+                
+                if(elementoClonado.querySelector(`#${bloqueActivo}`)) {
+                    elementoClonado.querySelector(`#${bloqueActivo}`).classList.remove('pdf-page-break');
+                }
+
+                const todosLosBloques = ['doc-planificacion', 'doc-ofimatica', 'doc-multimedia', 'doc-codigo'];
+                todosLosBloques.forEach(id => {
+                    if (id !== bloqueActivo) {
+                        const nodo = elementoClonado.querySelector(`#${id}`);
+                        if (nodo) nodo.remove();
+                    }
+                });
+            }
+
+            const opciones = {
+                margin:       [15, 15, 15, 15],
+                filename:     nombreArchivo,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opciones).from(elementoClonado).save();
+        });
+    };
+</script>
+
+</body>
+</html>
