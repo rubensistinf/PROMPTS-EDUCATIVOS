@@ -77,27 +77,31 @@ body {
     }
 }
 
-/* Botón de instalación PWA */
+/* Botón de instalación PWA Flotante */
 .btn-install-pwa {
-    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    background: linear-gradient(135deg, #0ea5e9, #3b82f6);
     color: white;
     border: none;
-    border-radius: 12px;
-    padding: 0.7rem 1.5rem;
+    border-radius: 50px;
+    padding: 0.8rem 1.5rem;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 1rem;
     cursor: pointer;
     display: none;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
-    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
 }
 
 .btn-install-pwa:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.6);
 }
 
 /* =============================================
@@ -380,85 +384,132 @@ body {
     }
 }
 
-/* PDF Styles (Hidden in Web, Rendered in PDF) */
+/* =====================================================
+   PDF STYLES — A4 correctamente ajustado
+   A4 útil a 96dpi = 794px - márgenes = ~680px
+   ===================================================== */
+
+/* El contenedor oculto: usar overflow:hidden para no afectar el layout */
 #contenedor-pdf-oculto {
-    position: absolute;
+    position: fixed;
     left: -9999px;
-    top: -9999px;
-    visibility: hidden;
+    top: 0;
+    width: 680px;          /* Ancho exacto del contenido A4 */
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
 }
 
 #documento-pdf {
-    background-color: var(--pdf-bg);
-    padding: 40px;
-    width: 800px;
+    background-color: #ffffff;
+    padding: 30px 35px;
+    width: 680px;          /* Ancho exacto que cabe en A4 con márgenes 15mm */
     font-family: 'Segoe UI', Arial, sans-serif;
-    color: var(--pdf-text);
-    line-height: 1.6;
+    color: #1e293b;
+    line-height: 1.65;
+    font-size: 10pt;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
+/* ---- Encabezado del Manual ---- */
 .pdf-header {
     text-align: center;
-    margin-bottom: 30px;
-    border-bottom: 3px solid var(--primary);
-    padding-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 3px solid #0ea5e9;
+    padding-bottom: 18px;
 }
 
 .pdf-header h1 {
-    font-size: 26pt;
+    font-size: 20pt;
     color: #0f172a;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    word-wrap: break-word;
 }
 
 .pdf-header h3 {
-    font-size: 14pt;
-    color: var(--primary);
+    font-size: 12pt;
+    color: #0ea5e9;
     font-weight: normal;
+    margin-bottom: 8px;
 }
 
+.pdf-header p {
+    font-size: 9.5pt;
+    color: #64748b;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+/* ---- Secciones ---- */
 .pdf-section {
-    margin-top: 30px;
-    page-break-inside: avoid;
+    margin-top: 22px;
 }
 
 .pdf-section h2 {
     background-color: #f1f5f9;
-    padding: 10px 15px;
+    padding: 8px 12px;
     color: #1e293b;
-    border-left: 5px solid var(--primary);
-    font-size: 16pt;
-    margin-bottom: 15px;
+    border-left: 5px solid #0ea5e9;
+    font-size: 13pt;
+    margin-bottom: 12px;
+    word-wrap: break-word;
 }
 
+/* ---- Items dentro de cada sección ---- */
 .pdf-item {
-    margin-bottom: 25px;
-    padding-left: 15px;
+    margin-bottom: 18px;
+    padding-left: 10px;
 }
 
 .pdf-item h3 {
-    color: var(--primary-hover);
-    font-size: 14pt;
-    margin-bottom: 10px;
+    color: #0284c7;
+    font-size: 11pt;
+    margin-bottom: 8px;
+    word-wrap: break-word;
 }
 
+/* ---- Tablas ---- */
 .pdf-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+    table-layout: fixed;    /* CLAVE: evita que las celdas se expandan más allá del ancho */
+    word-break: break-word;
 }
 
-.pdf-table th, .pdf-table td {
+.pdf-table th,
+.pdf-table td {
     border: 1px solid #cbd5e1;
-    padding: 10px;
+    padding: 8px 10px;
     text-align: left;
+    vertical-align: top;
+    font-size: 9.5pt;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;    /* Permite salto de línea dentro de celdas */
 }
 
+/* Columna "Qué ingresas / Qué recibes" — ancho fijo */
 .pdf-table th {
     background-color: #f8fafc;
     color: #334155;
-    font-weight: 600;
+    font-weight: 700;
+    width: 130px;           /* Columna de etiqueta: ancho fijo */
 }
 
+.pdf-table td {
+    color: #475569;
+}
+
+/* ---- Salto de página ---- */
 .pdf-page-break {
     page-break-before: always;
+    break-before: always;
 }
+
+
+/* Fin de estilos PDF */
