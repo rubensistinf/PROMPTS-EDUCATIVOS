@@ -3,249 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Prompts Pro | EduConnectRuben</title>
-    
-    <!-- Librerías Externas -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- SEO y Descripción -->
+    <title>Generador de Prompts PRO | EduConnectRuben</title>
+    <meta name="description" content="Genera prompts profesionales para IA: pedagogía MESCP, programación full stack, ofimática y multimedia. Herramienta PRO para docentes y desarrolladores.">
+    <meta name="author" content="EduConnectRuben">
+    <meta name="keywords" content="prompts educativos, IA educación, generador prompts, MESCP, programación python, BTH Bolivia">
+
+    <!-- Open Graph (Preview al compartir enlace en WhatsApp, Facebook, LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://prompts-educativos.netlify.app/">
+    <meta property="og:title" content="🚀 Generador de Prompts PRO | EduConnectRuben">
+    <meta property="og:description" content="Genera prompts perfectos para cualquier IA. Pedagogía, programación Full Stack Python+PostgreSQL, ofimática y multimedia. ¡Nivel PRO para docentes y programadores!">
+    <meta property="og:image" content="https://prompts-educativos.netlify.app/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="es_BO">
+    <meta property="og:site_name" content="EduConnectRuben | Prompts PRO">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🚀 Generador de Prompts PRO | EduConnectRuben">
+    <meta name="twitter:description" content="Genera prompts perfectos para cualquier IA. Pedagogía, programación, ofimática y multimedia. ¡Nivel PRO!">
+    <meta name="twitter:image" content="https://prompts-educativos.netlify.app/assets/og-image.png">
+
+    <!-- PWA -->
+    <link rel="manifest" href="/instalar/manifest.json">
+    <meta name="theme-color" content="#0ea5e9">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PromptsPRO">
+    <link rel="apple-touch-icon" href="/instalar/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/instalar/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/instalar/icon-512.png">
+
+    <!-- Fuentes y Librerías -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Fira+Code&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-    <!-- Estilos Propios (Glassmorphism) -->
+
+    <!-- Estilos -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<div class="app-header">
-    <h1 class="header-title">GENERADOR DE PROMPTS PRO 🚀</h1>
-    <span class="badge-custom">EduConnectRuben | MESCP & BTH | NIVEL PRO</span>
-</div>
+<!-- Header -->
+<header class="app-header">
+    <div class="header-inner">
+        <div>
+            <h1 class="header-title">GENERADOR DE PROMPTS PRO 🚀</h1>
+            <span class="badge-custom">EduConnectRuben | MESCP &amp; BTH | NIVEL PRO</span>
+        </div>
+        <!-- Botón Instalar PWA -->
+        <button id="pwa-install-btn" style="display:none;" class="btn-custom btn-install-pwa">
+            <i class="fa-solid fa-download"></i> Instalar App
+        </button>
+    </div>
+</header>
 
+<!-- Layout principal -->
 <main class="main-grid">
+
     <!-- Panel Izquierdo: Configuración -->
     <section class="glass-card">
-        <h2 class="section-title"><i class="fa-solid fa-sliders"></i> 1. Selecciona tu Herramienta</h2>
-        
-        <select id="categoriaSelect" class="form-select-custom">
-            <option value="all" selected>-- Elige una categoría educativa --</option>
-            <optgroup label="📚 Área: Pedagógica (MESCP)">
-                <option value="tema">Desarrollo de Tema / Contenido</option>
-                <option value="pdc">Plan de Clase / PDC</option>
-                <option value="evaluacion">Generador de Evaluaciones</option>
-                <option value="rubricas">Rúbricas de Evaluación</option>
-                <option value="adaptacion">Adaptación Curricular (Inclusión)</option>
-                <option value="tutoria">Tutoría y Seguimiento de Casos</option>
-                <option value="proyecto_abp">Diseño de Proyecto (ABP)</option>
-                <option value="dinamicas">Dinámicas Didácticas (Gamificación)</option>
-            </optgroup>
-            <optgroup label="🏢 Área: Ofimática y Gestión">
-                <option value="word">Guía / Documento Word</option>
-                <option value="excel">Plantilla Automática Excel</option>
-                <option value="pptx">Estructura Presentación PPTX</option>
-                <option value="admin">Gestión Administrativa Formal</option>
-                <option value="correo">Redactor de Correo Profesional</option>
-            </optgroup>
-            <optgroup label="💻 Área: Sistemas / Programación">
-                <option value="taller">Guía de Laboratorio / Taller</option>
-                <option value="frontend">Código: Frontend (UI/UX)</option>
-                <option value="backend">Código: Backend y Base de Datos</option>
-                <option value="tutor_codigo">Tutor Explicador de Código</option>
-                <option value="debugging">Asistente de Debugging de Errores</option>
-                <option value="arquitectura">Diseñador de Arquitectura de Software</option>
-                <option value="sql">Generador y Optimizador SQL</option>
-            </optgroup>
-            <optgroup label="🎬 Área: Multimedia y Diseño">
-                <option value="video">Guion para Video Educativo</option>
-                <option value="audio">Guion para Podcast / Audio</option>
-                <option value="imagen">Generador de Imágenes IA (Midjourney/DALL-E)</option>
-                <option value="copywriting">Copywriting para Redes (Educativo)</option>
-            </optgroup>
-        </select>
 
+        <!-- PASO 1: Selección de Grupo/Área -->
+        <h2 class="section-title"><i class="fa-solid fa-folder-open"></i> 1. Elige el Área</h2>
+        <div id="grupos-container" class="grupos-grid"></div>
+
+        <!-- PASO 2: Selección de Herramienta dentro del Grupo -->
+        <div id="paso2-section" class="d-none">
+            <h2 class="section-title mt-4"><i class="fa-solid fa-list-check"></i> 2. Elige la Herramienta</h2>
+            <select id="herramientaSelect" class="form-select-custom">
+                <option value="">-- Selecciona una herramienta --</option>
+            </select>
+        </div>
+
+        <!-- PASO 3: Formulario dinámico -->
         <div id="formSection" class="d-none flex-grow">
-            <h2 class="section-title mt-4"><i class="fa-solid fa-pen-to-square"></i> 2. Completa los Datos Clave</h2>
-            <!-- Los campos se inyectarán aquí dinámicamente -->
+            <h2 class="section-title mt-4"><i class="fa-solid fa-pen-to-square"></i> 3. Completa los Datos</h2>
             <div id="dynamicFieldsContainer"></div>
         </div>
 
+        <!-- Estado vacío inicial -->
         <div id="placeholderBox" class="placeholder-box">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
-            <p>Selecciona una categoría arriba para configurar<br>los parámetros específicos de tu prompt.</p>
+            <p>Selecciona un <strong>Área</strong> arriba para ver las herramientas disponibles.</p>
         </div>
-        
+
+        <!-- Botones de acción -->
         <div id="actionButtonsArea" class="mt-4 d-none flex-col gap-3">
             <button id="btnGenerar" class="btn-custom btn-primary-custom">
                 <i class="fa-solid fa-microchip"></i> Generar Súper Prompt
             </button>
             <button id="btnDescargarPDF" class="btn-custom btn-secondary-custom">
-                <i class="fa-solid fa-file-pdf text-danger"></i> Descargar Manual Técnico PDF
+                <i class="fa-solid fa-file-pdf" style="color:#f87171;"></i> Descargar Manual Técnico PDF
             </button>
         </div>
     </section>
 
     <!-- Panel Derecho: Resultado -->
     <section class="glass-card">
-        <h2 class="section-title" style="color: var(--accent);"><i class="fa-solid fa-terminal"></i>>_ Prompt Generado (Strict Mode)</h2>
+        <h2 class="section-title" style="color: var(--accent);">
+            <i class="fa-solid fa-terminal"></i>>_ Prompt Generado (Strict Mode)
+        </h2>
         <textarea id="promptResult" class="result-textarea" readonly>El prompt estructurado y profesional aparecerá aquí, listo para ser copiado a tu IA favorita...</textarea>
-        
         <button id="btnCopiar" class="btn-custom btn-secondary-custom mt-4">
             <i class="fa-regular fa-copy"></i> Copiar Prompt al Portapapeles
         </button>
     </section>
+
 </main>
 
-<!-- ========================================== -->
-<!-- PLANTILLA OCULTA PARA GENERACIÓN DEL PDF   -->
-<!-- ========================================== -->
+<!-- =====================================================
+     PLANTILLA OCULTA PARA GENERACIÓN DEL PDF MANUAL
+     ===================================================== -->
 <div id="contenedor-pdf-oculto">
     <div id="documento-pdf">
         <div class="pdf-header">
             <h1>MANUAL TÉCNICO DE PROMPTS PRO</h1>
             <h3>Metodología Strict-Form | EduConnectRuben</h3>
-            <p style="margin-top: 15px; font-size: 11pt; color: #64748b;">
-                <strong>Objetivo del Sistema:</strong> Eliminar las "alucinaciones" de la Inteligencia Artificial mediante estructuras de prompts rígidas, roles definidos y formatos de salida estrictos.
+            <p style="margin-top:15px;font-size:11pt;color:#64748b;">
+                <strong>Objetivo:</strong> Cada herramienta usa un "candado estricto" para que la IA entregue exactamente lo que necesitas, sin relleno ni alucinaciones.
             </p>
         </div>
-
         <div id="contenido-manual">
-            <!-- SECCIÓN 1: PEDAGOGÍA -->
+
             <div id="doc-planificacion" class="pdf-section">
                 <h2>1. ÁREA PEDAGÓGICA (MESCP)</h2>
-                
-                <div class="pdf-item">
-                    <h3>🎯 Desarrollo de Tema / Contenido</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El tema exacto a enseñar, la audiencia (ej. 4to secundaria) y cómo quieres el formato (ensayo, resumen).</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>Un texto directo sin saludos, formateado en Markdown, adaptando el nivel de complejidad al estudiante.</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>📚 Plan de Desarrollo Curricular (PDC)</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El contenido central de la clase y el año de escolaridad.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>El PDC estructurado en tablas Markdown incluyendo Objetivo Holístico, Momentos Metodológicos (Práctica, Teoría, Valoración, Producción) y Criterios.</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>📝 Evaluaciones y Rúbricas</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El tema a evaluar, cantidad de preguntas y nivel de dificultad.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>El examen estructurado para entregar al estudiante y, por separado, la clave de respuestas para el profesor.</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>🧩 Adaptación Curricular y Tutoría</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El diagnóstico del estudiante (ej. TDAH, Dislexia) o el problema de rendimiento escolar.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>Estrategias de ajuste metodológico, agendas de reunión con padres y modelos de actas de compromiso.</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>🚀 ABP y Dinámicas Didácticas</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El problema de contexto (para ABP) o el tema a enseñar mediante gamificación.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>Las fases del proyecto detalladas, o las reglas completas de un juego interactivo de aula.</td></tr>
-                    </table>
-                </div>
+                <div class="pdf-item"><h3>🎯 Desarrollo de Tema</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>Tema exacto, nivel educativo, formato deseado y regla especial.</td></tr><tr><th>Qué recibes</th><td>Contenido formateado en Markdown, sin saludos, adaptado al nivel del alumno.</td></tr></table></div>
+                <div class="pdf-item"><h3>📚 Plan de Clase / PDC</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>Contenido, año de escolaridad y trimestre.</td></tr><tr><th>Qué recibes</th><td>PDC con Objetivo Holístico, 4 Momentos Metodológicos y Criterios de Evaluación en tablas Markdown.</td></tr></table></div>
+                <div class="pdf-item"><h3>📝 Evaluaciones y Rúbricas</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>Tema, cantidad de preguntas y dificultad.</td></tr><tr><th>Qué recibes</th><td>Examen listo para el alumno + clave de respuestas justificada para el docente.</td></tr></table></div>
+                <div class="pdf-item"><h3>🧩 Adaptación Curricular y Tutoría</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>Diagnóstico del estudiante (TDAH, Dislexia) o el caso de bajo rendimiento.</td></tr><tr><th>Qué recibes</th><td>Estrategias pedagógicas adaptadas, agenda de reunión con padres y modelo de acta de compromiso.</td></tr></table></div>
+                <div class="pdf-item"><h3>🚀 Proyectos ABP y Gamificación</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>El reto/problema del contexto, la materia y el producto final esperado.</td></tr><tr><th>Qué recibes</th><td>Fases del proyecto con pregunta guía, competencias a desarrollar y reglas del juego didáctico.</td></tr></table></div>
             </div>
 
-            <!-- SECCIÓN 2: OFIMÁTICA -->
             <div id="doc-ofimatica" class="pdf-section pdf-page-break">
-                <h2>2. ÁREA DE OFIMÁTICA Y ADMINISTRACIÓN</h2>
-                
-                <div class="pdf-item">
-                    <h3>📄 Documentos Word y Estructuras PPTX</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El tema principal, extensión o número de diapositivas requeridas.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>El contenido estructurado con Títulos H1/H2, o el esquema por diapositiva indicando imágenes sugeridas y notas de orador.</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>📗 Plantillas Automáticas Excel</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El propósito de tu cuadro y las columnas que necesitas registrar.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>La estructura sugerida de la tabla y las fórmulas exactas (ej. `=BUSCARV`, `=SI`) para que solo copies y pegues.</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>🗂️ Gestión Administrativa y Correos</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>Tipo de documento (Carta, Circular, Informe) o el destinatario y objetivo de un correo electrónico.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>Un documento formal corporativo o un correo profesional listo para enviar, con espacios para rellenar datos específicos.</td></tr>
-                    </table>
-                </div>
+                <h2>2. ÁREA OFIMÁTICA Y GESTIÓN</h2>
+                <div class="pdf-item"><h3>📄 Word, PPTX y Excel</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>Tema, extensión/cantidad de diapositivas, columnas y funciones requeridas.</td></tr><tr><th>Qué recibes</th><td>Contenido estructurado con H1/H2, esquema de diapositivas con guion de orador, o fórmulas Excel exactas para copiar y pegar.</td></tr></table></div>
+                <div class="pdf-item"><h3>🗂️ Gestión Administrativa y Correos</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>Tipo de documento o destinatario y objetivo del correo.</td></tr><tr><th>Qué recibes</th><td>Carta formal con marcadores [CORCHETES] para rellenar, o correo con Asunto + Cuerpo + CTA listo para enviar.</td></tr></table></div>
             </div>
 
-            <!-- SECCIÓN 3: SISTEMAS / PROGRAMACIÓN -->
             <div id="doc-codigo" class="pdf-section pdf-page-break">
-                <h2>3. ÁREA DE SISTEMAS Y PROGRAMACIÓN (BTH)</h2>
-                
-                <div class="pdf-item">
-                    <h3>⚙️ Guías de Laboratorio (Taller)</h3>
+                <h2>3. ÁREA SISTEMAS / PROGRAMACIÓN (BTH)</h2>
+                <div class="pdf-item"><h3>🏫 Plataforma Educativa Completa (Full Stack)</h3>
                     <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>La práctica técnica (ej. Ponchado de cables) y las herramientas disponibles en el aula.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>El manual de taller paso a paso con advertencias de seguridad y rúbrica de verificación técnica.</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>💻 Código Frontend y Backend</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El componente (ej. Login) o lógica (ej. API de Notas), y el stack tecnológico (ej. React, Node.js, PostgreSQL).</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>Única y exclusivamente bloques de código limpios y documentados. El Frontend incluye diseño responsivo; el Backend incluye seguridad y modelo de base de datos.</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>🧑‍🏫 Tutor Explicador y Debugging</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El código o concepto que no entiendes, o el error de consola exacto (Ej. TypeError).</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>Analogías y desgloses línea por línea del código. Explicación de la causa raíz de un error y su solución óptima paso a paso.</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>🏗️ Arquitectura y Optimizador SQL</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>La escala de tu proyecto y necesidades en la nube, o las tablas y consulta que deseas hacer a tu BD.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>Patrones de arquitectura, stacks recomendados y diagramas textuales. Consultas SQL complejas, rápidas y sugerencias de índices.</td></tr>
-                    </table>
-                </div>
+                        <tr><th>Qué ingresas</th><td>Nombre del sistema, módulos (Login, Notas, Asistencia), roles y requisitos especiales.</td></tr>
+                        <tr><th>Qué recibes</th><td><strong>[SECCIÓN 1]</strong> Esquema PostgreSQL completo con scripts SQL.<br><strong>[SECCIÓN 2]</strong> Backend Python (Flask/FastAPI) con endpoints REST y autenticación JWT.<br><strong>[SECCIÓN 3]</strong> Frontend HTML/CSS/JS responsivo con llamadas fetch() a la API.<br><strong>[SECCIÓN 4]</strong> Instrucciones de despliegue y variables .env.</td></tr>
+                    </table></div>
+                <div class="pdf-item"><h3>🖥️ Frontend y Backend por Componente</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>El componente o funcionalidad específica y el stack tecnológico.</td></tr><tr><th>Qué recibes</th><td>Código limpio y comentado en español. Sin explicaciones fuera del código.</td></tr></table></div>
+                <div class="pdf-item"><h3>🧑‍🏫 Tutor de Código y Debugging</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>El concepto que no entiendes o el error exacto de consola.</td></tr><tr><th>Qué recibes</th><td>Analogía + desglose línea por línea, o causa raíz del bug + solución rápida + solución robusta.</td></tr></table></div>
+                <div class="pdf-item"><h3>🏗️ Arquitectura y SQL Avanzado</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>Escala del proyecto y necesidades de nube, o tablas y consulta deseada.</td></tr><tr><th>Qué recibes</th><td>Patrón de arquitectura justificado + stack recomendado, o consulta SQL optimizada con índices.</td></tr></table></div>
             </div>
 
-            <!-- SECCIÓN 4: MULTIMEDIA -->
             <div id="doc-multimedia" class="pdf-section pdf-page-break">
                 <h2>4. ÁREA MULTIMEDIA Y DISEÑO</h2>
-                
-                <div class="pdf-item">
-                    <h3>🎬 Guiones Audiovisuales (Video/Podcast)</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El tema, el formato/plataforma (TikTok, YouTube, Spotify) y la duración exacta.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>Una tabla a dos columnas indicando tiempo/visual y la locución exacta, incluyendo hooks de retención e indicaciones de efectos de sonido (SFX).</td></tr>
-                    </table>
-                </div>
-
-                <div class="pdf-item">
-                    <h3>🎨 IA Generativa (Imágenes y Copywriting)</h3>
-                    <table class="pdf-table">
-                        <tr><th>¿Qué debes ingresar?</th><td>El sujeto, entorno y estilo de imagen, o el tema y CTA de un post para redes sociales.</td></tr>
-                        <tr><th>¿Qué genera la IA?</th><td>Prompts hiper-detallados en inglés para Midjourney, o textos persuasivos (Copywriting) con emojis y hashtags listos para publicar.</td></tr>
-                    </table>
-                </div>
+                <div class="pdf-item"><h3>🎬 Guiones de Video y Podcast</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>Tema, plataforma (TikTok/YouTube) y duración exacta.</td></tr><tr><th>Qué recibes</th><td>Tabla Visual/Audio con gancho de retención en los primeros 3 segundos y marcas de efectos de sonido.</td></tr></table></div>
+                <div class="pdf-item"><h3>🎨 Imágenes IA y Copywriting</h3>
+                    <table class="pdf-table"><tr><th>Qué ingresas</th><td>Sujeto, entorno y estilo artístico, o el tema del post y la red social.</td></tr><tr><th>Qué recibes</th><td>Prompt en inglés técnico para Midjourney/DALL-E, o caption con Hook + AIDA + Hashtags listos para publicar.</td></tr></table></div>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- Lógica del Sistema -->
+<!-- Scripts -->
 <script src="js/prompts.js"></script>
 <script src="js/app.js"></script>
+<script src="/instalar/pwa.js"></script>
 
 </body>
 </html>

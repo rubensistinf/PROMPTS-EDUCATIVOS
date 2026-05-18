@@ -1,8 +1,37 @@
 /**
  * Diccionario de Prompts con candados estrictos (Nivel Pro)
- * Cada categoría define sus campos requeridos y su lógica de ensamblaje (Prompt Engineering).
+ * Sistema de selección por GRUPOS (2 pasos).
  */
 
+// ---------------------------------------------------------------
+// GRUPOS: Define las áreas y qué prompts contiene cada una
+// ---------------------------------------------------------------
+const GRUPOS = {
+    pedagogia: {
+        label: "📚 Área Pedagógica (MESCP)",
+        icon: "fa-graduation-cap",
+        herramientas: ["tema", "pdc", "evaluacion", "rubricas", "adaptacion", "tutoria", "proyecto_abp", "dinamicas"]
+    },
+    ofimatica: {
+        label: "🏢 Área Ofimática y Gestión",
+        icon: "fa-briefcase",
+        herramientas: ["word", "excel", "pptx", "admin", "correo"]
+    },
+    sistemas: {
+        label: "💻 Área Sistemas / Programación",
+        icon: "fa-code",
+        herramientas: ["plataforma_educativa", "taller", "frontend", "backend", "tutor_codigo", "debugging", "arquitectura", "sql"]
+    },
+    multimedia: {
+        label: "🎬 Área Multimedia y Diseño",
+        icon: "fa-photo-film",
+        herramientas: ["video", "audio", "imagen", "copywriting"]
+    }
+};
+
+// ---------------------------------------------------------------
+// PROMPT_CONFIG: Definición completa de cada herramienta
+// ---------------------------------------------------------------
 const PROMPT_CONFIG = {
     // ----------------------------------------------------------------------
     // 1. ÁREA PEDAGÓGICA (MESCP)
@@ -142,9 +171,65 @@ const PROMPT_CONFIG = {
         ensamblar: (d) => `ACTÚA COMO: Asistente de Comunicación Corporativa.\n\nTAREA:\nRedacta un correo electrónico.\n\nDESTINATARIO: "${d.destinatario}".\nOBJETIVO: ${d.objetivo}.\nTONO: ${d.tono}.\n\nENTREGABLE:\n1. Un Asunto (Subject) claro, conciso y que llame la atención.\n2. El cuerpo del correo bien estructurado, usando negritas para las ideas principales, viñetas si es necesario listar cosas y un llamado a la acción (Call to Action) claro al final.\n\nREGLA ESTRICTA: Solo devuelve el Asunto y el Cuerpo del correo listos para enviar.`
     },
 
-    // ----------------------------------------------------------------------
-    // 3. ÁREA SISTEMAS / PROGRAMACIÓN
-    // ----------------------------------------------------------------------
+    plataforma_educativa: {
+        titulo: "🏫 Plataforma Educativa Completa (Full Stack)",
+        icono: "fa-school",
+        campos: [
+            { id: "nombre", label: "Nombre del Sistema", placeholder: "Ej. Sistema de Gestión Académica CEA", icon: "fa-tag" },
+            { id: "modulos", label: "Módulos requeridos", placeholder: "Ej. Login, Notas, Asistencia, Reportes", icon: "fa-layer-group" },
+            { id: "roles", label: "Roles de Usuario", placeholder: "Ej. Administrador, Docente, Estudiante", icon: "fa-users-gear" },
+            { id: "extra", label: "Requisitos Especiales", placeholder: "Ej. PDFs, estadísticas, modo oscuro", icon: "fa-star" }
+        ],
+        ensamblar: (d) => `ACTÚA COMO: Equipo de Desarrollo Full Stack Senior (Arquitecto + Frontend + Backend + DBA).
+
+TAREA:
+Diseña y genera el código base completo para una plataforma educativa web llamada "${d.nombre}".
+
+=== ESPECIFICACIONES DEL SISTEMA ===
+- MÓDULOS REQUERIDOS: ${d.modulos}.
+- ROLES DE USUARIO: ${d.roles}.
+- REQUISITOS ESPECIALES: ${d.extra}.
+
+=== STACK TECNOLÓGICO OBLIGATORIO ===
+- Frontend: HTML5 semántico + CSS3 (Variables CSS, Flexbox/Grid, 100% Responsivo) + JavaScript ES6+ Vanilla.
+- Backend: Python 3.11+ con Flask o FastAPI (elige el más adecuado y justifícalo).
+- Base de Datos: PostgreSQL (Esquema relacional normalizado, 3FN mínimo).
+- Autenticación: JWT (JSON Web Tokens) con expiración y refresh token.
+- Comunicación: API REST con JSON.
+
+=== ENTREGABLES (ORGANIZADOS POR SECCIÓN) ===
+
+[SECCIÓN 1 - ARQUITECTURA Y BD]
+- Diagrama textual de todas las tablas PostgreSQL con tipos de datos, PKs, FKs y constraints.
+- Scripts SQL CREATE TABLE completos y listos para ejecutar.
+- Script de datos iniciales (INSERT INTO) para el rol Administrador.
+
+[SECCIÓN 2 - BACKEND PYTHON]
+- Estructura de carpetas del proyecto (árbol de directorios).
+- Archivo de configuración y conexión a PostgreSQL (usando psycopg2 o asyncpg).
+- Rutas/endpoints REST para cada módulo: GET, POST, PUT, DELETE según corresponda.
+- Middleware de autenticación JWT para proteger rutas privadas.
+- Manejo de errores centralizado con respuestas JSON estándar.
+
+[SECCIÓN 3 - FRONTEND HTML/CSS/JS]
+- Página login.html con formulario y validación JS del lado cliente.
+- Dashboard diferenciado por rol (muestra menú según el JWT decodificado).
+- Vistas/formularios funcionales para cada módulo solicitado.
+- Todas las llamadas a la API usando fetch() con headers de autorización Bearer.
+- Diseño CSS profesional, oscuro, colores azul marino + celeste, completamente responsivo.
+
+[SECCIÓN 4 - DESPLIEGUE Y CONFIGURACIÓN]
+- Archivo .env con todas las variables necesarias (explicadas).
+- Pasos exactos para ejecutar el proyecto en local (terminal).
+- Cómo conectar y probar la API desde el frontend.
+
+=== REGLAS ESTRICTAS ===
+1. TODOS los comentarios en el código deben estar en ESPAÑOL.
+2. La API siempre devuelve JSON con estructura: {"success": true/false, "data": ..., "message": "..."}.
+3. El CSS debe usar variables (--color-primary, --bg-dark, etc.) para fácil personalización.
+4. NO incluyas texto explicativo fuera de los bloques de código, solo comentarios dentro del código.
+5. El código debe ser funcional, sin placeholder "TODO", sin código incompleto.`
+    },
     taller: {
         titulo: "⚙️ Guía de Laboratorio / Taller",
         icono: "fa-screwdriver-wrench",
