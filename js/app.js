@@ -197,17 +197,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const opciones = {
-            margin:      [10, 10, 10, 10],   // 10mm márgenes en A4
+            margin:      [15, 15, 15, 15],   // 15mm márgenes
             filename:    nombreArchivo,
-            image:       { type: 'jpeg', quality: 0.98 },
+            image:       { type: 'jpeg', quality: 1.0 },
+            pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] },
             html2canvas: {
                 scale:           2,
                 useCORS:         true,
                 letterRendering: true,
-                backgroundColor: '#ffffff',
-                windowWidth:     680,    // Debe coincidir con el ancho CSS del #documento-pdf
-                scrollX:         0,
-                scrollY:         0
+                backgroundColor: '#ffffff'
             },
             jsPDF: {
                 unit:        'mm',
